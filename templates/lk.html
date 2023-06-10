@@ -124,7 +124,7 @@
       xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
-            window.location.href = "http://127.0.0.1:8000/profile/";
+            window.location.href = "http://127.0.0.1:8000/lk/";
           } else {
             alert("Произошла ошибка при авторизации.");
           }
@@ -181,9 +181,9 @@
       xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
-            window.location.href = "http://127.0.0.1:8000/profile/";
+            window.location.href = "http://127.0.0.1:8000/lk/";
           } else {
-            alert("Произошла ошибка при регистрации.");
+            alert("Произошла ошибка при регистрации. Номер телефона или логин уже используются.");
           }
         }
       };

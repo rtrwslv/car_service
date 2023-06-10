@@ -143,8 +143,16 @@ def register_page(request):
     if request.method == 'POST':
         login = request.POST.get('username')
         password = request.POST.get('password')
-        address = request.POST.get('address')
-        owner = Owner(name=request.POST.get('name'), address=address, phone=request.POST.get('phone'))
+        phone = request.POST.get('phone')
+        all_owners = Owner.objects.all()
+        all_clients = Client.objects.all()
+        for owner in all_owners:
+            if owner.phone == phone:
+                return HttpResponseServerError('Данные уже зарегестрированы')
+        for client in all_clients:
+            if client.username == login:
+                return HttpResponseServerError('Данные уже зарегестрированы')
+        owner = Owner(name=request.POST.get('name'), address=request.POST.get('address'), phone=phone)
         owner.save()
         user = Client(username=login, password=password, owner=owner)
         user.save()
@@ -174,9 +182,13 @@ def profile(request):
             client = Client.objects.get(username=username)
             all_bookings = Booking.objects.all()
             print(all_bookings)
+            client_bookings = []
+            for booking in all_bookings:
+                if booking.phone == client.owner.phone:
+                    client_bookings.append(booking)
             context = {
                 'client': client,
-                'bookings': all_bookings,
+                'bookings': client_bookings,
             }
             return render(request, 'profile.html', context)
         except Client.DoesNotExist:
