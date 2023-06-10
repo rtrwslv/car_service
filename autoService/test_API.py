@@ -30,7 +30,6 @@ class AllAPITestCase(TestCase):
         }
 
 
-
     def test_create_owner(self):
         url = reverse('owner-list')
         response = self.client.post(url, data=self.owner_data)
@@ -40,7 +39,7 @@ class AllAPITestCase(TestCase):
         self.assertEqual(owner.name, self.owner_data['name'])
         self.assertEqual(owner.phone, self.owner_data['phone'])
         self.assertEqual(owner.address, self.owner_data['address'])
-    
+
     def test_create_car(self):
         self.test_create_owner()
         url = reverse('car-list')
