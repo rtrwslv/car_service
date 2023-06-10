@@ -2,19 +2,16 @@ from django.shortcuts import render
 from autoService.models import Car, Owner, Repair, Booking, Client
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponseServerError
 import json
 
+
 def car_list(request):
     if request.method == 'POST':
-        make = request.POST.get('make')
-        model = request.POST.get('model')
-        year = request.POST.get('year')
-        owner_id = request.POST.get('owner_id')
-
-        car = Car(make=make, model=model, year=year, owner_id=owner_id)
+        car = Car(make=request.POST.get('make'),
+                  model=request.POST.get('model'),
+                  year=request.POST.get('year'), 
+                  owner_id=request.POST.get('owner_id'))
         car.save()
 
         return JsonResponse({'message': 'Car created successfully.'})
@@ -35,12 +32,12 @@ def car_list(request):
     else:
         return JsonResponse({'message': 'Invalid request method.'})
 
+
 def owner_list(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        address = request.POST.get('address')
-        phone = request.POST.get('phone')
-        owner = Owner(name=name, address=address, phone=phone)
+        owner = Owner(name=request.POST.get('name'),
+                      address=request.POST.get('address'),
+                      phone=request.POST.get('phone'))
         owner.save()
         return JsonResponse({'message': 'Owner created successfully.'})
     elif request.method == 'GET':
@@ -57,23 +54,26 @@ def owner_list(request):
         except Car.DoesNotExist:
             return JsonResponse({'message': 'Owner not found'}, status=404)
 
+
 def repair_list(request):
     repairs = Repair.objects.all()
     return render(request, 'repair_list.html', {'repairs': repairs})
 
+
 def main_page(request):
     return render(request, 'index.html')
+
 
 def calendar_page(request):
     booked_dates = []
     bookings = Booking.objects.all()
-    
     for booking in bookings:
         booked_dates.append(str(booking.date))
     context = {
-                'booked_dates': booked_dates
+            'booked_dates': booked_dates,
             }
     return render(request, 'calendar.html', context=context)
+
 
 def uslugi_page(request):
     username = request.session.get('username')
@@ -81,7 +81,7 @@ def uslugi_page(request):
         try:
             client = Client.objects.get(username=username)
             context = {
-                'client': client
+                'client': client,
             }
             return render(request, 'uslugi.html', context)
         except Client.DoesNotExist:
@@ -89,11 +89,14 @@ def uslugi_page(request):
     else:
         return lk_page(request)
 
+
 def contact_page(request):
     return render(request, "contacts.html")
 
+
 def success_page(request):
     return render(request, "success.html")
+
 
 def lk_page(request):
     username = request.session.get('username')
@@ -109,6 +112,7 @@ def lk_page(request):
     else:
         return render(request, "lk.html")
 
+
 def save_booking(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -123,7 +127,6 @@ def save_booking(request):
     else:
         return JsonResponse({'status': 'error'})
 
-from django.http import JsonResponse
 
 def bookings(request):
     if request.method == 'DELETE':
@@ -138,6 +141,7 @@ def bookings(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
+
 
 @csrf_exempt
 def register_page(request):
@@ -154,7 +158,8 @@ def register_page(request):
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error'})
-    
+
+  
 @csrf_exempt
 def login_page(request):
     if request.method == 'POST':
@@ -171,6 +176,7 @@ def login_page(request):
             return HttpResponseServerError('Неверное имя пользователя или пароль.')
     else:
         return HttpResponseServerError('Метод запроса должен быть POST.')
+
 
 def profile(request):
     username = request.session.get('username')

@@ -1,8 +1,8 @@
+import views
 from django.contrib import admin
 from django.urls import path
-from . import views
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -21,5 +21,5 @@ urlpatterns = [
     path('lk/', views.lk_page, name='lk-page'),
     path('register/', views.register_page, name='register-page'),
     path('login/', views.login_page, name='login-page'),
-    path('profile/', views.profile, name='profile-page')
+    path('profile/', views.profile, name='profile-page'),
 ]
