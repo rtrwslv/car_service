@@ -9,9 +9,9 @@ import json
 def car_list(request):
     if request.method == 'POST':
         car = Car(make=request.POST.get('make'),
-                  model=request.POST.get('model'),
-                  year=request.POST.get('year'), 
-                  owner_id=request.POST.get('owner_id'))
+                model=request.POST.get('model'),
+                year=request.POST.get('year'), 
+                owner_id=request.POST.get('owner_id'))
         car.save()
 
         return JsonResponse({'message': 'Car created successfully.'})
@@ -36,8 +36,8 @@ def car_list(request):
 def owner_list(request):
     if request.method == 'POST':
         owner = Owner(name=request.POST.get('name'),
-                      address=request.POST.get('address'),
-                      phone=request.POST.get('phone'))
+                    address=request.POST.get('address'),
+                    phone=request.POST.get('phone'))
         owner.save()
         return JsonResponse({'message': 'Owner created successfully.'})
     elif request.method == 'GET':
@@ -69,9 +69,7 @@ def calendar_page(request):
     bookings = Booking.objects.all()
     for booking in bookings:
         booked_dates.append(str(booking.date))
-    context = {
-            'booked_dates': booked_dates,
-            }
+    context = {'booked_dates': booked_dates,}
     return render(request, 'calendar.html', context=context)
 
 
@@ -103,9 +101,6 @@ def lk_page(request):
     if username:
         try:
             client = Client.objects.get(username=username)
-            context = {
-                'client': client
-            }
             return profile(request)
         except Client.DoesNotExist:
             lk_page(request)
@@ -118,14 +113,11 @@ def save_booking(request):
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         date = request.POST.get('date')
-        time = request.POST.get('time')
         service = request.POST.get('service').replace("_", " ")
-        booking = Booking(name=name, phone=phone, date=date, time=time, service=service)
+        booking = Booking(name=name, phone=phone, date=date, time=request.POST.get('time'), service=service)
         booking.save()
 
         return JsonResponse({'status': 'success'})
-    else:
-        return JsonResponse({'status': 'error'})
 
 
 def bookings(request):
@@ -137,8 +129,8 @@ def bookings(request):
             return JsonResponse({'message': 'Запись успешно удалена'})
         except Booking.DoesNotExist:
             return JsonResponse({'error': 'Запись не найдена'}, status=404)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+        except Exception as exception:
+            return JsonResponse({'error': str(exception)}, status=500)
     else:
         return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
 
@@ -148,18 +140,14 @@ def register_page(request):
     if request.method == 'POST':
         login = request.POST.get('username')
         password = request.POST.get('password')
-        name = request.POST.get('name')
         address = request.POST.get('address')
-        phone = request.POST.get('phone')
-        owner = Owner(name=name, address=address, phone=phone)
+        owner = Owner(name=request.POST.get('name'), address=address, phone=request.POST.get('phone'))
         owner.save()
         user = Client(username=login, password=password, owner=owner)
         user.save()
         return JsonResponse({'status': 'success'})
-    else:
-        return JsonResponse({'status': 'error'})
 
-  
+
 @csrf_exempt
 def login_page(request):
     if request.method == 'POST':
@@ -172,8 +160,6 @@ def login_page(request):
         if client.password == password:
             request.session['username'] = username
             return render(request, 'profile.html')
-        else:
-            return HttpResponseServerError('Неверное имя пользователя или пароль.')
     else:
         return HttpResponseServerError('Метод запроса должен быть POST.')
 
@@ -183,11 +169,11 @@ def profile(request):
     if username:
         try:
             client = Client.objects.get(username=username)
-            bookings = Booking.objects.all()
-            print(bookings)
+            all_bookings = Booking.objects.all()
+            print(all_bookings)
             context = {
                 'client': client,
-                'bookings': bookings
+                'bookings': all_bookings,
             }
             return render(request, 'profile.html', context)
         except Client.DoesNotExist:
