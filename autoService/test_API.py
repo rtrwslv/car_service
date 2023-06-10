@@ -29,7 +29,6 @@ class AllAPITestCase(TestCase):
             'owner': 1,
         }
 
-
     def test_create_owner(self):
         url = reverse('owner-list')
         response = self.client.post(url, data=self.owner_data)
