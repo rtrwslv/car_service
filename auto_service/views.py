@@ -152,9 +152,9 @@ def register_page(request):
         for client in all_clients:
             if client.username == login:
                 return HttpResponseServerError('Данные уже зарегестрированы')
-        owner = Owner(name=request.POST.get('name'), address=request.POST.get('address'), phone=phone)
-        owner.save()
+        owner = Owner(name=request.POST.get('name'), address=request.POST.get('address'), phone=phone).save()
         user = Client(username=login, password=password, owner=owner)
+        owner.save()
         user.save()
         return JsonResponse({'status': 'success'})
 
