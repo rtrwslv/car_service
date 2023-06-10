@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Успешная запись</title>
+ <style>
+  body {
+   background-color: #f2f2f2;
+   font-family: Arial, sans-serif;
+   text-align: center;
+   padding-top: 50px;
+  }
+
+  h1 {
+   font-size: 36px;
+   color: #4CAF50;
+   margin-bottom: 30px;
+  }
+
+  .checkmark {
+   display: inline-block;
+   width: 80px;
+   height: 80px;
+   border-radius: 50%;
+   background-color: #4CAF50;
+   position: relative;
+   margin-bottom: 30px;
+  }
+
+  .checkmark:before {
+   content: '';
+   position: absolute;
+   top: 50%;
+   left: 25%;
+   width: 25px;
+   height: 13px;
+   border-bottom: 3px solid white;
+   border-right: 3px solid white;
+   transform: rotate(-45deg);
+   transform-origin: left top;
+  }
+
+  .checkmark:after {
+   content: '';
+   position: absolute;
+   top: 50%;
+   left: 35%;
+   width: 25px;
+   height: 3px;
+   background-color: white;
+   transform: rotate(-45deg);
+   transform-origin: right top;
+  }
+
+  p {
+   font-size: 24px;
+   margin-bottom: 30px;
+  }
+
+  a {
+   color: #4CAF50;
+   text-decoration: none;
+   font-size: 18px;
+  }
+ </style>
+</head>
+<body>
+ <div class="checkmark"></div>
+ <h1>Запись успешно оформлена!</h1>
+ <p>Спасибо, что выбрали наш автосервис. Мы свяжемся с вами в ближайшее время.</p>
+ <a href="http://127.0.0.1:8000/main/">Вернуться на главную</a>
+</body>
+</html>

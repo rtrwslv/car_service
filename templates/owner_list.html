@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список владельцев</title>
+</head>
+<body>
+    <h1>Список владельцев</h1>
+    <table>
+        <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+        </tr>
+        {% for owner in owners %}
+        <tr>
+            <td>{{ owner.name }}</td>
+            <td>{{ owner.address }}</td>
+            <td>{{ owner.phone }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<style>
+
+    h1 {
+        font-size: 36px;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      
+      form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      
+
+      label {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      
+      input[type="text"],
+      input[type="tel"],
+      input[type="date"],
+      input[type="time"],
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      
+      input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      
+      input[type="submit"]:hover {
+        background-color: #3e8e41;
+      }
+
+      button {
+        display: block;
+        margin: 0 auto;
+        font-size: 18px;
+        text-align: center;
+        width: 45%;
+        border-width: 5px
+      }
+            
+</style>
+<head>
+  <title>Запись на услуги автосервиса</title>
+</head>
+<body>
+  <h1>Запись на услуги автосервиса</h1>
+  <form id="bookingForm">
+      <label for="name">Имя:</label>
+      <input type="text" id="name" name="name" value={{client.owner.name}}><br>
+
+      <label for="phone">Номер телефона:</label>
+      <input type="tel" id="phone" name="phone" value={{client.owner.phone}}><br>
+
+      <label for="date">Дата:</label>
+      <input type="text" id="date" name="date" readonly><br>
+
+      <label for="time">Время:</label>
+      <input type="time" id="time" name="time"><br>
+
+      <label for="service">Услуга:</label>
+      <select id="service" name="service">
+          <option value="Замена_масла">Замена масла</option>
+          <option value="Ремонт_двигателя">Ремонт двигателя</option>
+          <option value="Шиномонтаж">Шиномонтаж</option>
+          <option value="Техническое_обслуживание">Техническое обслуживание</option>
+      </select><br>
+  </form>
+  <button onclick="submitForm()">Записаться</button>
+
+  <script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function submitForm() {
+      var nameInput = document.getElementById('name');
+      var phoneInput = document.getElementById('phone');
+      var dateInput = document.getElementById('date');
+      var timeInput = document.getElementById('time');
+      var serviceInput = document.getElementById('service');
+      var name = nameInput.value.trim();
+      var phone = phoneInput.value.trim();
+      var date = dateInput.value.trim();
+      var time = timeInput.value.trim();
+      var service = serviceInput.value.trim();
+  
+      if (!validateName(name)) {
+          alert('Пожалуйста, введите корректное имя.');
+          return;
+      }
+  
+      if (!validatePhone(phone)) {
+          alert('Пожалуйста, введите корректный номер телефона.');
+          return;
+      }
+
+      if (!time){
+        alert('Не введено время.')
+        return
+      }
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://127.0.0.1:8000/save_booking/');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken')); 
+      xhr.onreadystatechange = function() {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200) {
+                  window.location.href = 'http://127.0.0.1:8000/success/';
+              } else {
+                  alert('Произошла ошибка при отправке данных.');
+              }
+          }
+      };
+      var data = 'name=' + encodeURIComponent(name) +
+                 '&phone=' + encodeURIComponent(phone) +
+                 '&date=' + encodeURIComponent(date) +
+                 '&time=' + encodeURIComponent(time) +
+                 '&service=' + encodeURIComponent(service);
+  
+      xhr.send(data);
+  }
+    function validateName(name) {
+        var nameRegex = /^[a-zA-Zа-яА-Я]+$/;
+        return nameRegex.test(name);
+    }
+    function validatePhone(phone) {
+        var phoneRegex = /^\+7\d{10}$/;
+        return phoneRegex.test(phone);
+    }
+    window.onload = function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var choosenDate = urlParams.get('choosen_date');
+
+        if (choosenDate) {
+            var dateField = document.getElementById('date');
+            dateField.value = choosenDate;
+            dateField.setAttribute('readonly', 'readonly');
+        }
+    };
+</script>
+</body>
+    

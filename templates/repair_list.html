@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список ремонтов</title>
+</head>
+<body>
+    <h1>Список ремонтов</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Автомобиль</th>
+                <th>Описание</th>
+                <th>Цена ремонта</th>
+                <th>Дата ремонта</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repair in repairs %}
+            <tr>
+                <td>{{ repair.car }}</td>
+                <td>{{ repair.description }}</td>
+                <td>{{ repair.cost }}</td>
+                <td>{{ repair.repair_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>Список записей на обслуживание</title>
+</head>
+<body>
+    <h1>Список записей на обслуживание</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Номер телефона</th>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Услуга</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.name }}</td>
+                <td>{{ booking.phone }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.time }}</td>
+                <td>{{ booking.service }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

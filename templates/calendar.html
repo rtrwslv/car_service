@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Календарь записи в автосервис</title>
+    <style>
+        /* Стили для календаря */
+        .calendar {
+            font-family: Arial, sans-serif;
+            width: 300px;
+            margin: 20px auto;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar th,
+        .calendar td {
+            border: 1px solid #ccc;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .calendar th {
+            background-color: #f0f0f0;
+        }
+
+        .calendar td.available {
+            background-color: #c3e6c9;
+            cursor: pointer;
+        }
+
+        .calendar td.booked {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar">
+        <h2>Календарь записи в автосервис</h2>
+        <div class="controls">
+            <label for="month-select">Выберите месяц:</label>
+            <select id="month-select">
+                <option value="0">Январь</option>
+                <option value="1">Февраль</option>
+                <option value="2">Март</option>
+                <option value="3">Апрель</option>
+                <option value="4">Май</option>
+                <option value="5">Июнь</option>
+                <option value="6">Июль</option>
+                <option value="7">Август</option>
+                <option value="8">Сентябрь</option>
+                <option value="9">Октябрь</option>
+                <option value="10">Ноябрь</option>
+                <option value="11">Декабрь</option>
+            </select>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Пн</th>
+                    <th>Вт</th>
+                    <th>Ср</th>
+                    <th>Чт</th>
+                    <th>Пт</th>
+                    <th>Сб</th>
+                    <th>Вс</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        var calendarBody = document.querySelector('.calendar tbody');
+        var monthSelect = document.getElementById('month-select');
+        var bookedDates = {{ booked_dates|safe }};
+      
+        function getFirstDayOfMonth(year, month) {
+            return new Date(year, month, 1).getDay();
+        }
+      
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+      
+        function isPastDate(year, month, date) {
+            var currentDate = new Date();
+            var selectedDate = new Date(year, month, date);
+            return selectedDate < currentDate;
+        }
+      
+        function generateCalendar(year, month) {
+            var startDate = new Date(year, month, 1);
+            var firstDayOfMonth = getFirstDayOfMonth(year, month);
+            var daysInMonth = getDaysInMonth(year, month);
+            var currentDate = 1;
+      
+            var html = '';
+      
+            html += '<tr>';
+      
+            for (var i = 1; i < firstDayOfMonth; i++) {
+                html += '<td></td>';
+            }
+      
+            for (var j = firstDayOfMonth; j < 8; j++) {
+                var date = currentDate.toString().padStart(2, '0');
+                var formattedDate = year + '-' + (month + 1).toString().padStart(2, '0') + '-' + date;
+                var cellClass = bookedDates.includes(formattedDate) ? 'booked' : 'available';
+                html += '<td class="' + cellClass + '" data-date="' + currentDate + '">' + currentDate + '</td>';
+                currentDate++;
+            }
+      
+            html += '</tr>';
+      
+            while (currentDate <= daysInMonth) {
+                html += '<tr>';
+      
+                for (var k = 0; k < 7 && currentDate <= daysInMonth; k++) {
+                    var date = currentDate.toString().padStart(2, '0');
+                    var formattedDate = year + '-' + (month + 1).toString().padStart(2, '0') + '-' + date;
+                    var cellClass = bookedDates.includes(formattedDate) ? 'booked' : 'available';
+                    html += '<td class="' + cellClass + '" data-date="' + currentDate + '">' + currentDate + '</td>';
+                    currentDate++;
+                }
+      
+                html += '</tr>';
+            }
+      
+            calendarBody.innerHTML = html;
+        }
+      
+        monthSelect.addEventListener('change', function() {
+            var selectedMonth = parseInt(monthSelect.value);
+            var currentYear = new Date().getFullYear();
+      
+            generateCalendar(currentYear, selectedMonth);
+        });
+      
+        var currentMonth = new Date().getMonth();
+        generateCalendar(new Date().getFullYear(), currentMonth);
+        monthSelect.value = currentMonth.toString();
+        calendarBody.addEventListener('click', function(event) {
+          var target = event.target;
+          if (target.classList.contains('available')) {
+            var selectedDate = target.getAttribute('data-date');
+            var selectedMonth = parseInt(monthSelect.value);
+            var currentYear = new Date().getFullYear();
+        
+            if (isPastDate(currentYear, selectedMonth, selectedDate)) {
+              alert('На эту дату уже не получиться записаться.');
+              return;
+            }
+        
+            selectedDate = selectedDate.toString().padStart(2, '0');
+        
+            selectedMonth = (selectedMonth + 1).toString().padStart(2, '0');
+        
+            var confirmation = confirm('Вы выбрали дату ' + selectedDate + '-' + selectedMonth + '. Хотите продолжить?');
+        
+            if (confirmation) {
+              window.location.href = 'http://127.0.0.1:8000/uslugi?choosen_date=' + currentYear + '-' + selectedMonth + '-' + selectedDate;
+            }
+          }
+        });
+      </script>
+      
+      <style>
+        /* Добавленный стиль для отмеченных дат */
+        .booked {
+          background-color: red;
+          color: white;
+        }
+      </style>
+</body>
+</html>

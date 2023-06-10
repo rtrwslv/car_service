@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Личный кабинет</title>
+</head>
+<body>
+  <h1>Личный кабинет</h1>
+
+  <div id="loginFormContainer">
+    <h2>Вход</h2>
+    <form id="loginForm">
+      <label for="username">Имя пользователя:</label>
+      <input type="text" id="username" name="username"><br>
+
+      <label for="password">Пароль:</label>
+      <input type="password" id="password" name="password"><br>
+
+      <button type="submit">Войти</button>
+    </form>
+
+    <p>Еще не зарегистрированы? <a href="#" id="registerLink">Зарегистрироваться</a></p>
+  </div>
+
+  <div id="registerFormContainer">
+    <h2>Регистрация</h2>
+    <form id="registerForm">
+      <label for="newUsername">Имя пользователя:</label>
+      <input type="text" id="newUsername" name="newUsername"><br>
+
+      <label for="newPassword">Пароль:</label>
+      <input type="password" id="newPassword" name="newPassword"><br>
+
+      <label for="name">Имя:</label>
+      <input type="text" id="name" name="name"><br>
+
+      <label for="address">Адрес:</label>
+      <input type="text" id="address" name="address"><br>
+
+      <label for="phone">Телефон:</label>
+      <input type="text" id="phone" name="phone"><br>
+
+      <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    <p>Уже зарегистрированы? <a href="#" id="loginLink">Войти</a></p>
+  </div>
+
+  <div id="loggedInContent" style="display: none;">
+    <!-- Здесь будет содержимое личного кабинета после успешной аутентификации -->
+    <h2>Добро пожаловать в личный кабинет!</h2>
+    <p>Имя: <span id="loggedInName"></span></p>
+    <p>Адрес: <span id="loggedInAddress"></span></p>
+    <p>Телефон: <span id="loggedInPhone"></span></p>
+  </div>
+
+  <script>
+    var loginFormContainer = document.getElementById("loginFormContainer");
+    var registerFormContainer = document.getElementById("registerFormContainer");
+    var loggedInContent = document.getElementById("loggedInContent");
+    var loginLink = document.getElementById("loginLink");
+    var registerLink = document.getElementById("registerLink");
+
+    var isAuthenticated = checkAuthentication();
+
+    if (isAuthenticated) {
+      showLoggedInContent();
+    } else {
+      showLoginForm();
+    }
+
+    function checkAuthentication() {
+      var isAuthenticated = false;
+      return isAuthenticated;
+    }
+
+    function showLoginForm() {
+      loginFormContainer.style.display = "block";
+      registerFormContainer.style.display = "none";
+      loggedInContent.style.display = "none";
+    }
+
+    function showRegisterForm() {
+      loginFormContainer.style.display = "none";
+      registerFormContainer.style.display = "block";
+      loggedInContent.style.display = "none";
+    }
+
+    function showLoggedInContent() {
+      loginFormContainer.style.display = "none";
+      registerFormContainer.style.display = "none";
+      loggedInContent.style.display = "block";
+      var loggedInName = document.getElementById("loggedInName");
+      var loggedInAddress = document.getElementById("loggedInAddress");
+      var loggedInPhone = document.getElementById("loggedInPhone");
+
+
+      var name = "Иван Иванов";
+      var address = "Москва, Россия";
+      var phone = "+7 123 456 7890";
+
+      loggedInName.textContent = name;
+      loggedInAddress.textContent = address;
+      loggedInPhone.textContent = phone;
+    }
+
+    loginLink.addEventListener("click", function(event) {
+      event.preventDefault();
+      showLoginForm();
+    });
+
+    registerLink.addEventListener("click", function(event) {
+      event.preventDefault();
+      showRegisterForm();
+    });
+    var loginForm = document.getElementById("loginForm");
+    var loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      var username = document.getElementById("username").value.trim();;
+      var password = document.getElementById("password").value.trim();;
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://127.0.0.1:8000/login/");
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            window.location.href = "http://127.0.0.1:8000/profile/";
+          } else {
+            alert("Произошла ошибка при авторизации.");
+          }
+        }
+      };
+
+      var data = 'username=' + encodeURIComponent(username) +
+                 '&password=' + encodeURIComponent(password);
+      xhr.send(data);
+    });
+    var registerForm = document.getElementById("registerForm");
+    registerForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      var newUsernameInput = document.getElementById("newUsername");
+      var newPasswordInput = document.getElementById("newPassword");
+      var nameInput = document.getElementById("name");
+      var addressInput = document.getElementById("address");
+      var phoneInput = document.getElementById("phone");
+
+      var newUsername = newUsernameInput.value.trim();
+      var newPassword = newPasswordInput.value.trim();
+      var name = nameInput.value.trim();
+      var address = addressInput.value.trim();
+      var phone = phoneInput.value.trim();
+      if (!validateUsername(newUsername)) {
+        alert("Пожалуйста, введите корректное имя пользователя.");
+        return;
+      }
+
+      if (!validatePassword(newPassword)) {
+        alert("Пожалуйста, введите корректный пароль.");
+        return;
+      }
+
+      if (!validateName(name)) {
+        alert("Пожалуйста, введите корректное имя.");
+        return;
+      }
+
+      if (!validateAddress(address)) {
+        alert("Пожалуйста, введите корректный адрес.");
+        return;
+      }
+
+      if (!validatePhone(phone)) {
+        alert("Пожалуйста, введите корректный номер телефона.");
+        return;
+      }
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://127.0.0.1:8000/register/");
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            window.location.href = "http://127.0.0.1:8000/profile/";
+          } else {
+            alert("Произошла ошибка при регистрации.");
+          }
+        }
+      };
+
+      var data = 'username=' + encodeURIComponent(newUsername) +
+                 '&password=' + encodeURIComponent(newPassword) +
+                 '&address=' + encodeURIComponent(address) +
+                 '&name=' + encodeURIComponent(name) +
+                 '&phone=' + encodeURIComponent(phone);
+  
+      xhr.send(data);
+    });
+    function validateUsername(username) {
+      var usernameRegex = /^[a-zA-Z0-9_]+$/;
+      return usernameRegex.test(username);
+    }
+    function validatePassword(password) {
+      return password.length >= 6;
+    }
+    function validateName(name) {
+      var nameRegex = /^[a-zA-Zа-яА-Я]+$/;
+      return nameRegex.test(name);
+    }
+    function validateAddress(address) {
+      return address.length > 0;
+    }
+    function validatePhone(phone) {
+      var phoneRegex = /^\+7\d{10}$/;
+      return phoneRegex.test(phone);
+    }
+  </script>
+</body>
+</html>
