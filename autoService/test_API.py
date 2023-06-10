@@ -2,34 +2,35 @@ from django.test import TestCase
 from django.urls import reverse
 from autoService.models import Car, Owner, Booking
 
+
 class AllAPITestCase(TestCase):
     def setUp(self):
         self.car_data = {
             'make': 'Toyota',
             'model': 'Camry',
             'year': 2022,
-            'owner_id': 1
+            'owner_id': 1,
         }
         self.owner_data = {
             'name': 'John Doe',
             'phone': '88005553535',
-            'address': '12345'
+            'address': '12345',
         }
         self.booking_data = {
             'name': 'John Doe',
             'phone': '555-1234',
             'date': '2022-01-01',
             'time': '09:00:00',
-            'service': 'Oil Change'
+            'service': 'Oil Change',
         }
         self.client_data = {
             'username': 'johndoe',
             'password': 'password',
-            'owner': 1
+            'owner': 1,
         }
 
 
-    
+
     def test_create_owner(self):
         url = reverse('owner-list')
         response = self.client.post(url, data=self.owner_data)
@@ -61,6 +62,7 @@ class AllAPITestCase(TestCase):
         self.assertEqual(booking.phone, self.booking_data['phone'])
         self.assertEqual(booking.date.strftime('%Y-%m-%d'), self.booking_data['date'])
         self.assertEqual(booking.time.strftime('%H:%M:%S'), self.booking_data['time'])
+
 
 class PageAvailabilityTest(TestCase):
     def test_admin_page(self):
