@@ -68,7 +68,7 @@ DATABASES = {
         'PASSWORD': 'change_me',
         'HOST': 'localhost',
         'PORT': '38746',
-    }
+    },
 }
 
 REST_FRAMEWORK = {

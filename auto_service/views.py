@@ -12,7 +12,7 @@ def car_list(request):
             make=request.POST.get('make'),
             model=request.POST.get('model'),
             year=request.POST.get('year'),
-            owner_id=request.POST.get('owner_id')
+            owner_id=request.POST.get('owner_id'),
             )
         car.save()
 
@@ -40,7 +40,7 @@ def owner_list(request):
         owner = Owner(
             name=request.POST.get('name'),
             address=request.POST.get('address'),
-            phone=request.POST.get('phone')
+            phone=request.POST.get('phone'),
             )
         owner.save()
         return JsonResponse({'message': 'Owner created successfully.'})
