@@ -8,10 +8,12 @@ import json
 
 def car_list(request):
     if request.method == 'POST':
-        car = Car(make=request.POST.get('make'),
-                model=request.POST.get('model'),
-                year=request.POST.get('year'), 
-                owner_id=request.POST.get('owner_id'))
+        car = Car(
+            make=request.POST.get('make'),
+            model=request.POST.get('model'),
+            year=request.POST.get('year'),
+            owner_id=request.POST.get('owner_id')
+            )
         car.save()
 
         return JsonResponse({'message': 'Car created successfully.'})
@@ -35,9 +37,11 @@ def car_list(request):
 
 def owner_list(request):
     if request.method == 'POST':
-        owner = Owner(name=request.POST.get('name'),
-                    address=request.POST.get('address'),
-                    phone=request.POST.get('phone'))
+        owner = Owner(
+            name=request.POST.get('name'),
+            address=request.POST.get('address'),
+            phone=request.POST.get('phone')
+            )
         owner.save()
         return JsonResponse({'message': 'Owner created successfully.'})
     elif request.method == 'GET':
@@ -69,7 +73,7 @@ def calendar_page(request):
     bookings = Booking.objects.all()
     for booking in bookings:
         booked_dates.append(str(booking.date))
-    context = {'booked_dates': booked_dates,}
+    context = {'booked_dates': booked_dates}
     return render(request, 'calendar.html', context=context)
 
 
@@ -100,7 +104,6 @@ def lk_page(request):
     username = request.session.get('username')
     if username:
         try:
-            client = Client.objects.get(username=username)
             return profile(request)
         except Client.DoesNotExist:
             lk_page(request)
